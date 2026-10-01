@@ -1,0 +1,70 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import portrait from "../assets/fidele.jpg";
+---
+<section class="hero" id="accueil">
+  <div class="container grid">
+    <div class="text">
+      <h1>Je développe des applications web et j'assure le <span>suivi des transactions</span> de paiement.</h1>
+      <p class="sub">Développeuse full stack junior et data analyst des transactions.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="#projets">Voir mes projets <Icon name="lucide:arrow-right" size={18} aria-hidden="true" /></a>
+        <a class="btn btn--outline" href="#contact">Me contacter</a>
+      </div>
+    </div>
+
+    <div class="media">
+      <span class="block" aria-hidden="true"></span>
+      <div class="photo">
+        <Image
+          src={portrait}
+          alt="Portrait d'Odette Fidèle Gossi LOKOSSOU devant son ordinateur portable"
+          widths={[360, 540, 720, 1080]}
+          sizes="(min-width: 52rem) 30rem, 90vw"
+          loading="eager"
+          fetchpriority="high"
+          quality={80}
+        />
+      </div>
+      <p class="chip chip--b"><span class="live" aria-hidden="true"></span> Data analyst chez Paynala</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; padding: 3rem 0 4.5rem; overflow: clip; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem; opacity: 0.55;
+    mask-image: radial-gradient(70% 80% at 70% 30%, #000, transparent);
+  }
+  .grid { display: grid; gap: 4rem; align-items: center; }
+  .grid > * { min-width: 0; }
+  h1 { font-size: clamp(2rem, 4.6vw, 3.5rem); font-weight: 700; line-height: 1.12; letter-spacing: -0.025em; max-width: 20ch; }
+  h1 span { color: var(--color-accent); }
+  .sub { margin-top: 1.5rem; font-size: clamp(1.05rem, 2vw, 1.2rem); color: var(--color-text-muted); max-width: 30rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
+
+  .media { position: relative; width: 100%; max-width: 27rem; margin-inline: auto; padding: 0 1.25rem 1.25rem 0; }
+  .block { position: absolute; inset: 1.25rem 0 0 1.25rem; border-radius: var(--radius-lg); background: linear-gradient(140deg, var(--color-accent), var(--color-accent-hover)); }
+  .photo { position: relative; aspect-ratio: 4 / 5; border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-alt); }
+  .photo :global(img) { width: 100%; max-width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+  .chip {
+    position: absolute; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: 999px;
+    background: var(--color-header-bg); backdrop-filter: blur(10px); border: 1px solid var(--color-border);
+    font-size: 0.85rem; font-weight: 500; color: var(--color-heading); animation: float 6s ease-in-out infinite;
+  }
+  .chip :global(svg) { color: var(--color-accent); }
+  .chip--b { bottom: 3.5rem; left: -1.25rem; }
+  .live { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 4px var(--color-badge-bg); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  @media (min-width: 52rem) {
+    .hero { padding: 5rem 0 7rem; }
+    .grid { grid-template-columns: 1.2fr 0.8fr; gap: 4rem; }
+    .media { margin-inline: 0; justify-self: end; }
+    .chip--b { left: -2.5rem; }
+  }
+</style>

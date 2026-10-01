@@ -1,0 +1,49 @@
+---
+import { Icon } from "astro-icon/components";
+const verbs = [
+  { icon: "lucide:activity", word: "Suivre", text: "les plateformes de paiement et d'assurance" },
+  { icon: "lucide:search-check", word: "Analyser", text: "leurs transactions" },
+  { icon: "lucide:code-xml", word: "Développer", text: "des solutions numériques" },
+];
+---
+<section class="section" id="a-propos" aria-labelledby="apropos-titre">
+  <div class="container">
+    <p class="eyebrow reveal">01 · À propos</p>
+    <h2 class="title reveal" id="apropos-titre">Développeuse web passionnée par les applications et les logiciels.</h2>
+
+    <div class="bento">
+      {verbs.map((v, i) => (
+        <article class="tile tile--verb reveal" style={`--d:${i * 0.08}s`}>
+          <span class="ico"><Icon name={v.icon} size={24} aria-hidden="true" /></span>
+          <h3>{v.word}</h3>
+          <p>{v.text}</p>
+        </article>
+      ))}
+      <article class="tile tile--wide reveal" style="--d:0.24s">
+        <p>Formée en Génie logiciel à l'ESGIS, j'ai débuté par le développement d'une plateforme e-commerce, puis rejoint Paynala en décembre 2025.</p>
+        <p>Je travaille en <strong>Scrum</strong> : découpage en tâches, gestion des priorités, livraisons régulières.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .title { max-width: 20ch; }
+  .bento { display: grid; gap: 1rem; margin-top: 3.5rem; }
+  .tile { border-radius: var(--radius-lg); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .tile--verb { background: var(--color-bg-alt); border: 1px solid var(--color-border); transition: transform 0.3s, border-color 0.3s; }
+  .tile--verb:hover { transform: translateY(-4px); border-color: var(--color-accent); }
+  .ico { display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--color-accent); color: var(--color-on-accent); margin-bottom: 1.5rem; }
+  .tile--verb h3 { font-size: 1.9rem; }
+  .tile--verb p { color: var(--color-text-muted); }
+  .tile--wide { background: var(--color-inverse-bg); color: var(--color-on-inverse-muted); justify-content: center; gap: 1rem; font-size: 1.05rem; }
+  .tile--wide strong { color: var(--color-on-inverse); }
+  @media (min-width: 52rem) {
+    .bento { grid-template-columns: repeat(3, 1fr); }
+    .tile--verb { min-height: 15rem; justify-content: flex-end; }
+    .ico { margin-bottom: auto; }
+    .tile--wide { grid-column: 1 / -1; flex-direction: row; gap: 3rem; padding: 2.25rem 2.5rem; }
+    .tile--wide p { flex: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tile--verb:hover { transform: none; } }
+</style>

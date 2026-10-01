@@ -1,0 +1,59 @@
+---
+import { Icon } from "astro-icon/components";
+
+// [icône, libellé, direction]
+const rows = [
+  {
+    dir: "normal",
+    items: [["devicon:java", "Java"], ["devicon:javascript", "JavaScript"], ["devicon:php", "PHP"], ["devicon:html5", "HTML"], ["devicon:css3", "CSS"], ["devicon:bootstrap", "Bootstrap"], ["devicon:tailwindcss", "TailwindCSS"], ["devicon:react", "React"], ["devicon:laravel", "Laravel"]],
+  },
+  {
+    dir: "reverse",
+    items: [["lucide:database", "SQL"], ["devicon:mysql", "MySQL"], ["devicon:postgresql", "PostgreSQL"], ["devicon:dbeaver", "DBeaver"], ["devicon:vscode", "VS Code"], ["devicon:webstorm", "WebStorm"], ["devicon:pycharm", "PyCharm"], ["devicon:cursor", "Cursor"], ["devicon:trello", "Trello"], ["devicon:slack", "Slack"]],
+  },
+];
+---
+<section class="marquee" aria-label="Technologies utilisées">
+  {rows.map((r) => (
+    <div class="row" style={`--dir:${r.dir}`}>
+      <div class="track">
+        {[0, 1].map((k) => (
+          <ul aria-hidden={k === 1 ? "true" : undefined}>
+            {r.items.map(([icon, label]) => (
+              <li>
+                <Icon name={icon} size={26} aria-hidden="true" />
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  ))}
+</section>
+
+<style>
+  .marquee {
+    display: grid; gap: 1rem; padding: 2.25rem 0; background: var(--color-bg-alt);
+    border-block: 1px solid var(--color-border); overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .row { overflow: hidden; }
+  .track { display: flex; width: max-content; animation: scroll 45s linear infinite; animation-direction: var(--dir); }
+  .row:hover .track { animation-play-state: paused; }
+  ul { display: flex; flex-shrink: 0; gap: 1rem; padding-right: 1rem; }
+  li {
+    display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.4rem 0.65rem 0.9rem;
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px;
+    font-family: var(--font-heading); font-weight: 600; font-size: 1rem; letter-spacing: -0.01em; color: var(--color-heading); white-space: nowrap;
+  }
+  li :global(svg) { flex: none; }
+  li :global(svg[data-icon^="lucide"]), li :global(svg[data-icon="lucide:database"]) { color: var(--color-accent); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { mask-image: none; padding-inline: 1.25rem; }
+    .track { width: auto; animation: none; }
+    ul[aria-hidden] { display: none; }
+    ul { flex-wrap: wrap; row-gap: 0.75rem; }
+  }
+</style>

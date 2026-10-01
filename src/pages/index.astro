@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Marquee from "../components/Marquee.astro";
+import About from "../components/About.astro";
+import Work from "../components/Work.astro";
+import Stack from "../components/Stack.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+
+const name = "Odette Fidèle Gossi LOKOSSOU";
+const title = `${name} | Développeuse Full Stack Junior & Transactions Data Analyst`;
+const description =
+  "Développeuse web passionnée par les applications et les logiciels. Je suis les plateformes de paiement et d'assurance, j'analyse leurs transactions et je développe des solutions numériques.";
+---
+<Layout {title} {description} {name}>
+  <Header {name} />
+  <main id="contenu">
+    <Hero />
+    <Marquee />
+    <About />
+    <Work />
+    <Stack />
+    <Contact />
+  </main>
+  <Footer {name} />
+</Layout>

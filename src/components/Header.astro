@@ -1,0 +1,109 @@
+---
+import { Icon } from "astro-icon/components";
+const { name } = Astro.props;
+const nav = [
+  { href: "#a-propos", label: "À propos" },
+  { href: "#projets", label: "Projets" },
+  { href: "#competences", label: "Compétences" },
+];
+---
+<header class="header">
+  <div class="container">
+    <div class="pill">
+      <a class="brand" href="#accueil">{name}</a>
+      <div class="actions">
+      <button class="theme" type="button" aria-label="Activer le mode nuit" aria-pressed="false" data-theme-toggle>
+        <Icon class="i-moon" name="lucide:moon" size={20} aria-hidden="true" />
+        <Icon class="i-sun" name="lucide:sun" size={20} aria-hidden="true" />
+      </button>
+      <nav aria-label="Navigation principale">
+        <button class="toggle" type="button" aria-expanded="false" aria-controls="nav-list">
+          <Icon name="lucide:menu" size={20} aria-hidden="true" /> Menu
+        </button>
+        <ul class="list" id="nav-list">
+          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+          <li class="cta"><a class="btn btn--primary" href="#contact">Me contacter</a></li>
+        </ul>
+      </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mode nuit : préférence mémorisée, sinon celle du système
+  const themeBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]")!;
+  const root = document.documentElement;
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const applyTheme = (t: "light" | "dark", save = false) => {
+    root.dataset.theme = t;
+    themeBtn.setAttribute("aria-pressed", String(t === "dark"));
+    themeBtn.setAttribute("aria-label", t === "dark" ? "Activer le mode jour" : "Activer le mode nuit");
+    if (meta) meta.content = t === "dark" ? "#0A1628" : "#FFFFFF";
+    if (save) { try { localStorage.setItem("theme", t); } catch {} }
+  };
+  applyTheme(root.dataset.theme === "dark" ? "dark" : "light");
+  themeBtn.addEventListener("click", () => applyTheme(root.dataset.theme === "dark" ? "light" : "dark", true));
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    let stored: string | null = null;
+    try { stored = localStorage.getItem("theme"); } catch {}
+    if (!stored) applyTheme(e.matches ? "dark" : "light");
+  });
+
+  const toggle = document.querySelector<HTMLButtonElement>(".toggle")!;
+  const list = document.getElementById("nav-list")!;
+  const setOpen = (open: boolean) => {
+    list.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+  };
+  toggle.addEventListener("click", () => setOpen(!list.classList.contains("is-open")));
+  list.addEventListener("click", (e) => { if ((e.target as Element).closest("a")) setOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+  document.addEventListener("click", (e) => { if (!(e.target as Element).closest("nav")) setOpen(false); });
+
+  const links = [...document.querySelectorAll<HTMLAnchorElement>(".list a[href^='#']:not(.btn)")];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      links.forEach((l) => l.toggleAttribute("aria-current", l.getAttribute("href") === `#${en.target.id}`));
+    });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  links.forEach((l) => { const s = document.querySelector(l.getAttribute("href")!); if (s) io.observe(s); });
+</script>
+
+<style>
+  .header { position: sticky; top: 0.75rem; z-index: 50; margin-top: 0.75rem; }
+  .pill {
+    position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0.5rem 0.6rem 0.5rem 1.4rem; border-radius: 999px;
+    background: var(--color-header-bg); backdrop-filter: blur(14px); border: 1px solid var(--color-border);
+  }
+  .actions { display: flex; align-items: center; gap: 0.5rem; }
+  .theme { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 50%; background: var(--color-bg-alt); color: var(--color-heading); cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .theme:hover { background: var(--color-badge-bg); color: var(--color-accent); }
+  .theme :global(.i-sun) { display: none; }
+  :global(:root[data-theme="dark"]) .theme :global(.i-moon) { display: none; }
+  :global(:root[data-theme="dark"]) .theme :global(.i-sun) { display: block; }
+  .brand { font-family: var(--font-heading); font-weight: 700; color: var(--color-heading); text-decoration: none; font-size: 0.95rem; letter-spacing: -0.01em; }
+  .brand:hover { color: var(--color-accent); }
+  .toggle { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; padding: 0 1.1rem; background: var(--color-bg-alt); border: 0; border-radius: 999px; color: var(--color-heading); font: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+  .list {
+    display: none; position: absolute; left: 0; right: 0; top: calc(100% + 0.5rem); flex-direction: column; gap: 0.25rem;
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 0.75rem 1.25rem 1.25rem;
+  }
+  .list.is-open { display: flex; }
+  .list a:not(.btn) { display: flex; align-items: center; min-height: 2.75rem; color: var(--color-text); text-decoration: none; font-weight: 500; }
+  .list a:not(.btn):hover, .list a[aria-current] { color: var(--color-accent); }
+  .cta { margin-top: 0.5rem; }
+  .cta .btn { width: 100%; }
+  @media (min-width: 52rem) {
+    .actions nav { order: 1; }
+    .theme { order: 2; margin-left: 0.25rem; }
+    .toggle { display: none; }
+    .list { display: flex; position: static; flex-direction: row; align-items: center; gap: 0.25rem; padding: 0; border: 0; background: none; }
+    .list a:not(.btn) { min-height: 2.5rem; padding: 0 1rem; border-radius: 999px; font-size: 0.92rem; }
+    .list a[aria-current] { background: var(--color-badge-bg); }
+    .cta { margin: 0 0 0 0.5rem; }
+    .cta .btn { width: auto; min-height: 2.75rem; padding: 0.4rem 1.4rem; font-size: 0.92rem; }
+  }
+</style>

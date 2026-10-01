@@ -1,0 +1,200 @@
+---
+import { Image, getImage } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import dashboard from "../assets/projects/dashboard.png";
+import myairtel from "../assets/projects/myairtel.png";
+import fougamou from "../assets/projects/fougamou.png";
+import graphicSide from "../assets/projects/graphic-side.png";
+import tonji from "../assets/projects/tonji.png";
+
+const projects = [
+  {
+    id: "dashboard",
+    link: "https://paynala-dashboard.paynala-dashboard-backend.workers.dev",
+    span: 2,
+    kind: "browser",
+    image: dashboard,
+    alt: "Capture du dashboard Suivi des transactions : filtres, indicateurs et graphiques d'évolution des succès et des échecs",
+    title: "Dashboard « Suivi des transactions »",
+    org: "Paynala",
+    role: "Conception, développement, analyse",
+    text: "Tableau de bord pour suivre l'activité des transactions et en tirer des indicateurs exploitables.",
+  },
+  {
+    id: "fougamou",
+    link: "https://projet-site-fougamou.vercel.app",
+    span: 2,
+    kind: "browser",
+    image: fougamou,
+    alt: "Capture de la page d'accueil du portail numérique de la ville de Fougamou",
+    title: "Plateforme web de la ville de Fougamou",
+    text: "Portail numérique de la ville de Fougamou, dans la Ngounié (Gabon).",
+  },
+  {
+    id: "graphic-side",
+    link: "https://site-gsd.vercel.app",
+    span: 2,
+    kind: "browser",
+    image: graphicSide,
+    alt: "Capture de la page d'accueil du site de l'agence Graphic Side Designers",
+    title: "Plateforme web Graphic Side Designers",
+    text: "Site de l'agence créative et digitale Graphic Side Designers : services, réalisations et demande de devis.",
+  },
+  {
+    id: "myairtel",
+    span: 3,
+    kind: "phone",
+    row: true,
+    mw: "11.5rem",
+    image: myairtel,
+    alt: "Capture de l'application MyAirtel avec l'écran d'accueil et les services de paiement Paynala",
+    title: "Interface Paynala dans MyAirtel",
+    org: "Paynala",
+    role: "Réalisation de l'interface graphique",
+    text: "Écran d'accueil et services de paiement de Paynala intégrés à l'application MyAirtel.",
+  },
+  {
+    id: "tonji",
+    link: "https://app.tonji.ga/",
+    span: 3,
+    kind: "browser",
+    row: true,
+    mw: "16rem",
+    image: tonji,
+    alt: "Capture du tableau de bord Tonji : total collecté, cagnottes actives, participants et liste des cagnottes",
+    title: "Tonji",
+    org: "Paynala",
+    role: "Conception de la plateforme web",
+    text: "Conception de la plateforme web de gestion des cotisations et des tontines.",
+  },
+];
+
+const withFull = await Promise.all(
+  projects.map(async (p) => ({ ...p, full: p.image ? (await getImage({ src: p.image, width: 1800, format: "webp" })).src : undefined })),
+);
+---
+<section class="section section--alt" id="projets" aria-labelledby="projets-titre">
+  <div class="container">
+    <p class="eyebrow reveal">02 · Projets</p>
+    <h2 class="title reveal" id="projets-titre">Des plateformes web, mobiles et de données.</h2>
+
+    <div class="grid">
+      {withFull.map((p, i) => (
+        <article class:list={["card", `card--${p.kind}`, { "card--row": p.row }, "reveal"]} style={`--span:${p.span};--mw:${p.mw ?? "auto"};--d:${(i % 2) * 0.08}s`}>
+          <div class="media">
+            {p.image ? (
+              <button class="zoom" type="button" data-zoom data-full={p.full} data-alt={p.alt} data-title={p.title} aria-label={`Agrandir la capture : ${p.title}`}>
+                {p.kind === "browser" ? (
+                  <span class="frame">
+                    <span class="frame__bar" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <Image src={p.image} alt={p.alt} widths={[480, 720, 1080]} sizes="(min-width: 60rem) 40rem, 90vw" loading="lazy" />
+                  </span>
+                ) : (
+                  <Image class="phone" src={p.image} alt={p.alt} widths={[240, 360, 480]} sizes="14rem" loading="lazy" />
+                )}
+                <span class="zoom__hint" aria-hidden="true"><Icon name="lucide:maximize-2" size={16} /> Agrandir</span>
+              </button>
+            ) : (
+              <div class="placeholder" role="img" aria-label="Capture d'écran à ajouter">
+                <Icon name="lucide:image" size={28} aria-hidden="true" />
+                <span>Capture à ajouter</span>
+              </div>
+            )}
+          </div>
+          <div class="body">
+            <p class="meta"><span class="mono">{String(i + 1).padStart(2, "0")}</span>{p.org && <span>{p.org}</span>}</p>
+            <h3>{p.title}</h3>
+            {p.role && <p class="role"><span class="label">Rôle</span> {p.role}</p>}
+            <p class="text">{p.text}</p>
+            {p.link && (
+              <p class="visit">
+                <a href={p.link} target="_blank" rel="noopener noreferrer">
+                  Voir le projet <Icon name="lucide:arrow-up-right" size={16} aria-hidden="true" />
+                  <span class="sr-only">: {p.title} (s'ouvre dans un nouvel onglet)</span>
+                </a>
+              </p>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <dialog class="lightbox" aria-label="Capture agrandie">
+    <form method="dialog"><button class="lightbox__close" aria-label="Fermer"><Icon name="lucide:x" size={22} aria-hidden="true" /></button></form>
+    <img alt="" />
+    <p class="lightbox__title"></p>
+  </dialog>
+</section>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(".lightbox")!;
+  const img = dialog.querySelector("img")!;
+  const title = dialog.querySelector<HTMLElement>(".lightbox__title")!;
+  document.querySelectorAll<HTMLButtonElement>("[data-zoom]").forEach((b) =>
+    b.addEventListener("click", () => {
+      img.src = b.dataset.full!;
+      img.alt = b.dataset.alt ?? "";
+      title.textContent = b.dataset.title ?? "";
+      dialog.showModal();
+    }),
+  );
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+</script>
+
+<style>
+  .title { max-width: 20ch; }
+  .grid { --r: 18px; display: grid; gap: 1rem; margin-top: 3rem; }
+  .card { display: flex; flex-direction: column; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r); overflow: hidden; transition: border-color 0.3s, transform 0.3s; }
+  .card:hover { border-color: var(--color-accent); transform: translateY(-3px); }
+
+  .media { position: relative; background: var(--color-badge-bg); padding: 0.9rem; display: grid; place-items: center; flex: none; }
+  .card--browser .media { aspect-ratio: 16 / 11; }
+  .card--phone .media { aspect-ratio: 16 / 11; }
+  .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; font: inherit; }
+  .zoom__hint { position: absolute; right: 0.5rem; bottom: 0.5rem; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.65rem; border-radius: 999px; background: var(--color-ink); color: var(--color-on-inverse); font-size: 0.72rem; font-weight: 500; opacity: 0; transform: translateY(6px); transition: opacity 0.25s, transform 0.25s; }
+  .zoom:hover .zoom__hint, .zoom:focus-visible .zoom__hint { opacity: 1; transform: none; }
+
+  .frame { display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+  .frame__bar { display: flex; gap: 0.3rem; padding: 0.4rem 0.6rem; background: var(--color-bg-alt); border-bottom: 1px solid var(--color-border); }
+  .frame__bar i { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--color-border); }
+  .frame :global(img) { display: block; width: 100%; height: auto; }
+  .zoom :global(.phone) { display: block; height: 13.5rem; width: auto; max-width: 100%; margin-inline: auto; object-fit: contain; border-radius: 1rem; filter: drop-shadow(0 8px 16px var(--color-shadow-hover)); }
+
+  .placeholder { display: grid; justify-items: center; gap: 0.4rem; color: var(--color-text-muted); font-size: 0.85rem; padding: 1.5rem 1rem; border: 2px dashed var(--color-border); border-radius: 8px; width: 100%; background: var(--color-surface); }
+  .placeholder :global(svg) { color: var(--color-accent); }
+
+  .body { display: flex; flex-direction: column; gap: 0.4rem; padding: 1.1rem 1.25rem 1.25rem; flex: 1; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.2rem 0.75rem; font-size: 0.8rem; color: var(--color-text-muted); }
+  .meta .mono { color: var(--color-accent); font-weight: 600; }
+  h3 { font-size: 1.1rem; line-height: 1.25; letter-spacing: -0.02em; }
+  .role { font-size: 0.85rem; color: var(--color-heading); font-weight: 500; }
+  .role .label { color: var(--color-accent); font-weight: 600; margin-right: 0.3rem; }
+  .text { color: var(--color-text-muted); font-size: 0.9rem; line-height: 1.55; }
+  .badge { font-size: 0.75rem; padding: 0.1rem 0.6rem; }
+  .visit { padding-top: 0.7rem; margin-top: auto; border-top: 1px solid var(--color-border); }
+  .visit a { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+  .visit a:hover { text-decoration: underline; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .lightbox { width: min(96vw, 80rem); max-height: 94vh; padding: 0; border: 0; border-radius: var(--radius-lg); background: var(--color-surface); overflow: auto; }
+  .lightbox::backdrop { background: rgb(11 31 58 / 0.78); }
+  .lightbox img { display: block; width: 100%; height: auto; }
+  .lightbox__title { padding: 1rem 1.5rem; font-family: var(--font-heading); font-weight: 600; color: var(--color-heading); }
+  .lightbox__close { position: absolute; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 50%; background: var(--color-ink); color: var(--color-on-inverse); cursor: pointer; }
+
+  @media (min-width: 40rem) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 64rem) {
+    .grid { grid-template-columns: repeat(6, 1fr); gap: 1.1rem; }
+    .card { grid-column: span var(--span); }
+    .card--row { flex-direction: row; }
+    .card--row .media { flex: 0 0 var(--mw); aspect-ratio: auto; }
+    .card--row .body { justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover { transform: none; }
+    .zoom__hint { transition: none; }
+  }
+</style>

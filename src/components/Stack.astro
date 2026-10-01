@@ -1,0 +1,114 @@
+---
+import { Icon } from "astro-icon/components";
+
+// [icône, libellé]
+const groups = [
+  { id: "langages", title: "Langages", items: [["devicon:java", "Java"], ["devicon:javascript", "JavaScript"], ["devicon:php", "PHP"]] },
+  { id: "web", title: "Web", items: [["devicon:html5", "HTML"], ["devicon:css3", "CSS"], ["devicon:bootstrap", "Bootstrap"], ["devicon:tailwindcss", "TailwindCSS"], ["devicon:react", "React"], ["devicon:laravel", "Laravel"]] },
+  { id: "donnees", title: "Bases de données", items: [["devicon:mysql", "MySQL"], ["lucide:database", "SQL"], ["devicon:postgresql", "PostgreSQL"]] },
+  { id: "methode", title: "Méthode", items: [["lucide:refresh-cw", "Scrum"], ["lucide:list-checks", "Découpage en tâches"], ["lucide:flag", "Gestion des priorités"]] },
+  { id: "outils", title: "Outils", items: [["devicon:vscode", "VS Code"], ["devicon:webstorm", "WebStorm"], ["devicon:pycharm", "PyCharm"], ["lucide:code-xml", "CodeBlocks"], ["lucide:wind", "WindSurf"], ["devicon:cursor", "Cursor"], ["devicon:dbeaver", "DBeaver"], ["devicon:slack", "Slack"], ["devicon:trello", "Trello"], ["devicon:xd", "Adobe XD"]] },
+];
+---
+<section class="section" id="competences" aria-labelledby="competences-titre">
+  <div class="container">
+    <p class="eyebrow reveal">03 · Compétences</p>
+    <h2 class="title reveal" id="competences-titre">Langages, web, données et outils.</h2>
+
+    <div class="skills reveal" data-skills>
+      <div class="tabs" role="tablist" aria-label="Catégories de compétences">
+        {groups.map((g, i) => (
+          <button class="tab" role="tab" type="button" id={`tab-${g.id}`} aria-controls={`panel-${g.id}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>
+            {g.title} <span class="tab__count mono">{g.items.length}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="panels">
+        {groups.map((g, i) => (
+          <div class="panel" role="tabpanel" id={`panel-${g.id}`} aria-labelledby={`tab-${g.id}`} data-active={i === 0 ? "true" : "false"} tabindex="0">
+            <h3 class="panel__title">{g.title}</h3>
+            <ul class="grid">
+              {g.items.map(([icon, label], k) => (
+                <li class="tile" style={`--k:${k}`}>
+                  <Icon name={icon} size={44} aria-hidden="true" />
+                  <span>{label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-skills]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[role=tabpanel]")];
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, k) => { t.setAttribute("aria-selected", String(k === i)); t.tabIndex = k === i ? 0 : -1; });
+      panels.forEach((p, k) => p.setAttribute("data-active", String(k === i)));
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => select(i));
+      t.addEventListener("keydown", (e) => {
+        const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        select((next + tabs.length) % tabs.length, true);
+      });
+    });
+  });
+</script>
+
+<style>
+  .title { max-width: 18ch; }
+  .skills { margin-top: 3rem; display: grid; gap: 1.25rem; }
+
+  .tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; scroll-snap-type: x proximity; }
+  .tab {
+    flex: none; scroll-snap-align: start; display: inline-flex; align-items: center; gap: 0.6rem; min-height: 3rem; padding: 0 1.25rem;
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; cursor: pointer;
+    font: inherit; font-weight: 600; color: var(--color-heading); transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .tab:hover { border-color: var(--color-accent); }
+  .tab[aria-selected="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+  .tab__count { font-size: 0.75rem; font-weight: 500; padding: 0.05rem 0.5rem; border-radius: 999px; background: var(--color-badge-bg); color: var(--color-badge-text); }
+  .tab[aria-selected="true"] .tab__count { background: rgb(255 255 255 / 0.2); color: var(--color-on-accent); }
+
+  /* Sans JavaScript : toutes les catégories s'affichent à la suite */
+  .tabs { display: none; }
+  .panels { display: grid; gap: 1rem; }
+  :global(.js) .tabs { display: flex; }
+  :global(.js) .panel { grid-area: 1 / 1; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0s 0.3s; }
+  :global(.js) .panel[data-active="true"] { visibility: visible; opacity: 1; transition-delay: 0s; }
+  :global(.js) .panel__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  .panel { background: var(--color-badge-bg); border-radius: var(--radius-lg); padding: 1.5rem; }
+  .panel__title { font-size: 1.2rem; margin-bottom: 1rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 0.85rem; }
+  .tile {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.85rem; text-align: center;
+    min-height: 8.5rem; padding: 1.25rem 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 20px;
+    font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem; letter-spacing: -0.01em; color: var(--color-heading);
+    transition: transform 0.25s, border-color 0.25s;
+  }
+  .tile :global(svg[data-icon^="lucide"]) { color: var(--color-accent); }
+  .tile:hover { transform: translateY(-3px); border-color: var(--color-accent); }
+  :global(.js) .panel[data-active="true"] .tile { animation: pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--k) * 45ms); }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+  @media (min-width: 52rem) {
+    .panel { padding: 2.25rem; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: 1rem; }
+    .tile { min-height: 10rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .panel[data-active="true"] .tile { animation: none; }
+    .tile:hover { transform: none; }
+    :global(.js) .panel { transition: none; }
+  }
+</style>

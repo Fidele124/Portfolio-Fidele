@@ -1,0 +1,78 @@
+---
+import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
+import "../styles/global.css";
+
+interface Props { title: string; description: string; name: string }
+const { title, description, name } = Astro.props;
+const ogImage = new URL("/og-image.png", Astro.site).href;
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FFFFFF" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={Astro.site} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={Astro.site} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${name}, développeuse full stack junior et data analyst transactions`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("theme");
+        if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.content = t === "dark" ? "#0A1628" : "#FFFFFF";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <div class="progress" aria-hidden="true"></div>
+    <slot />
+    <script>
+      const items = document.querySelectorAll<HTMLElement>(".reveal");
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce || !("IntersectionObserver" in window)) {
+        items.forEach((el) => el.classList.add("is-visible"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((en) => {
+            if (en.isIntersecting) { en.target.classList.add("is-visible"); io.unobserve(en.target); }
+          }),
+          { threshold: 0.12 },
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
+    <style is:global>
+      .progress { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 60; background: var(--color-accent); transform: scaleX(0); transform-origin: left; }
+      @supports (animation-timeline: scroll()) {
+        .progress { animation: grow linear both; animation-timeline: scroll(root); }
+        @keyframes grow { to { transform: scaleX(1); } }
+      }
+      .skip-link {
+        position: absolute; left: 1rem; top: -4rem; z-index: 100;
+        background: var(--color-accent); color: var(--color-on-accent);
+        padding: 0.6rem 1rem; border-radius: 6px; text-decoration: none;
+      }
+      .skip-link:focus { top: 1rem; color: var(--color-on-accent); }
+    </style>
+  </body>
+</html>

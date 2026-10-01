@@ -1,0 +1,71 @@
+/* Seul fichier où couleurs et polices sont définies. */
+:root {
+  /* Couleurs */
+  --color-bg: #ffffff;
+  --color-bg-alt: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-heading: #0b1f3a;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-accent: #1d4ed8;
+  --color-accent-hover: #1e40af;
+  --color-on-accent: #ffffff;
+  --color-on-accent-muted: #dbeafe;
+  --color-badge-bg: #eff6ff;
+  --color-badge-text: #1d4ed8;
+  --color-focus: #2563eb;
+  --color-shadow: rgb(11 31 58 / 0.06);
+  --color-shadow-hover: rgb(11 31 58 / 0.12);
+  /* Teintes douces de l'accent (faible opacité) */
+  --color-tint: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  --color-tint-strong: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg));
+  /* Aurore de la section Contact (bleus profonds, peu saturés) */
+  --color-ink: #0b1f3a; /* bleu nuit constant : texte sur surfaces claires, fonds sombres fixes */
+  --color-deep: color-mix(in srgb, var(--color-accent) 34%, var(--color-ink));
+  --color-aurora-1: color-mix(in srgb, var(--color-accent) 62%, transparent);
+  --color-aurora-2: color-mix(in srgb, var(--color-accent) 30%, white);
+  --color-glass: rgb(255 255 255 / 0.07);
+  --color-glass-border: rgb(255 255 255 / 0.18);
+  --color-inverse-bg: var(--color-ink);
+  --color-on-inverse: #ffffff;
+  --color-on-inverse-muted: #cbd5e1;
+  --color-inverse-border: rgb(255 255 255 / 0.28);
+  --color-focus-inverse: #93c5fd;
+  --color-header-bg: rgb(255 255 255 / 0.92);
+  color-scheme: light;
+
+  /* Forme */
+  --radius: 12px;
+  --radius-lg: 28px;
+
+  /* Polices */
+  --font-heading: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Mode nuit : mêmes rôles, bleus profonds ; l'accent s'éclaircit pour garder le contraste. */
+:root[data-theme="dark"] {
+  --color-bg: #0a1628;
+  --color-bg-alt: #0e1d33;
+  --color-surface: #12233b;
+  --color-heading: #f1f5f9;
+  --color-text: #e2e8f0;
+  --color-text-muted: #9fb0c8;
+  --color-border: #22385a;
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93c5fd;
+  --color-on-accent: #0b1f3a;
+  --color-on-accent-muted: #1e3a5f;
+  --color-badge-bg: #16304f;
+  --color-badge-text: #93c5fd;
+  --color-focus: #93c5fd;
+  --color-shadow: rgb(0 0 0 / 0.35);
+  --color-shadow-hover: rgb(0 0 0 / 0.5);
+  --color-inverse-bg: #060e1b;
+  --color-deep: #142c57;
+  --color-aurora-1: rgb(59 130 246 / 0.42);
+  --color-header-bg: rgb(10 22 40 / 0.86);
+  color-scheme: dark;
+}
